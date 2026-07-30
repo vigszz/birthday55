@@ -308,12 +308,6 @@ const sectionObserver=new IntersectionObserver((entries)=>{
 
 sections.forEach(section=>{
 
-    section.style.opacity="0";
-
-    section.style.transform="translateY(70px)";
-
-    section.style.transition=
-    "all .9s cubic-bezier(.22,.61,.36,1)";
 
     sectionObserver.observe(section);
 
@@ -731,7 +725,7 @@ heroImage.style.transform=
         CONFETTI
 ==========================*/
 
-const canvas=document.getElementById("confettiCanvas");
+const canvas=document.getElementById("confetti");
 const celebrateBtn=document.getElementById("celebrateBtn");
 
 let ctx=null;
@@ -1300,9 +1294,9 @@ card.style.transform="none";
         SMOOTH SCROLL
 ==========================*/
 
-history.scrollRestoration="manual";
+// history.scrollRestoration="manual";
 
-window.scrollTo(0,0);
+// window.scrollTo(0,0);
 
 
 /*==========================
