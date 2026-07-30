@@ -1,46 +1,64 @@
 /*=========================================================
-        VEDSHREE BIRTHDAY WEBSITE
-        Premium Script.js
+    VEDSHREE BIRTHDAY WEBSITE
+    PREMIUM SCRIPT.JS
+    PART 1
 =========================================================*/
 
 "use strict";
 
-/*==========================
-        ELEMENTS
-==========================*/
+/*=========================================================
+    ELEMENTS
+=========================================================*/
 
 const intro = document.getElementById("intro");
 const beginBtn = document.getElementById("beginBtn");
 
 const music = document.getElementById("bgMusic");
-const musicBtn = document.querySelector(".music-btn");
+const musicBtn = document.getElementById("musicBtn");
 
-const cursorGlow = document.querySelector(".cursor-glow");
+const hero = document.querySelector(".hero");
+const heroImage = document.querySelector(".hero-image");
+const heroContent = document.querySelector(".hero-content");
 
 const typingText = document.getElementById("typingText");
 
-const revealElements = document.querySelectorAll(".reveal");
+const revealItems = document.querySelectorAll(".reveal");
 
-/*==========================
-        BEGIN JOURNEY
-==========================*/
+const cursorGlow = document.querySelector(".cursor-glow");
 
-if(beginBtn && intro){
+/*=========================================================
+    INTRO
+=========================================================*/
 
-    beginBtn.addEventListener("click",()=>{
+window.addEventListener("load", () => {
+
+    window.scrollTo(0,0);
+
+    document.body.style.opacity = "1";
+
+});
+
+/*=========================================================
+    BEGIN BUTTON
+=========================================================*/
+
+if(beginBtn){
+
+    beginBtn.addEventListener("click", async ()=>{
 
         intro.style.opacity="0";
         intro.style.pointerEvents="none";
 
         setTimeout(()=>{
-
-            intro.style.display="none";
-
+            intro.remove();
         },1000);
 
         if(music){
 
-            music.play().catch(()=>{});
+            try{
+                await music.play();
+            }
+            catch(e){}
 
         }
 
@@ -48,19 +66,26 @@ if(beginBtn && intro){
 
 }
 
-/*==========================
-        MUSIC BUTTON
-==========================*/
+/*=========================================================
+    MUSIC BUTTON
+=========================================================*/
 
 if(musicBtn && music){
 
-    musicBtn.addEventListener("click",()=>{
+    musicBtn.addEventListener("click", async ()=>{
 
         if(music.paused){
 
-            music.play();
+            try{
 
-            musicBtn.innerHTML='<i class="fas fa-pause"></i>';
+                await music.play();
+
+                musicBtn.innerHTML =
+                `<i class="fa-solid fa-pause"></i>`;
+
+            }
+
+            catch(e){}
 
         }
 
@@ -68,7 +93,8 @@ if(musicBtn && music){
 
             music.pause();
 
-            musicBtn.innerHTML='<i class="fas fa-play"></i>';
+            musicBtn.innerHTML =
+            `<i class="fa-solid fa-music"></i>`;
 
         }
 
@@ -76,11 +102,11 @@ if(musicBtn && music){
 
 }
 
-/*==========================
-        CURSOR GLOW
-==========================*/
+/*=========================================================
+    CURSOR GLOW
+=========================================================*/
 
-if(cursorGlow){
+if(window.innerWidth>900 && cursorGlow){
 
     let mouseX=0;
     let mouseY=0;
@@ -95,25 +121,25 @@ if(cursorGlow){
 
     });
 
-    function animateCursor(){
+    function animateGlow(){
 
-        glowX+=(mouseX-glowX)*0.15;
-        glowY+=(mouseY-glowY)*0.15;
+        glowX += (mouseX-glowX)*0.18;
+        glowY += (mouseY-glowY)*0.18;
 
         cursorGlow.style.left=glowX+"px";
         cursorGlow.style.top=glowY+"px";
 
-        requestAnimationFrame(animateCursor);
+        requestAnimationFrame(animateGlow);
 
     }
 
-    animateCursor();
+    animateGlow();
 
 }
 
-/*==========================
-        TYPEWRITER
-==========================*/
+/*=========================================================
+    TYPEWRITER
+=========================================================*/
 
 if(typingText){
 
@@ -125,9 +151,11 @@ I wanted to create something that would always exist...
 
 Something you could revisit whenever you wanted to smile.
 
-Thank you for every memory, every laugh and every beautiful moment.
-
-I hope today brings endless happiness, unforgettable memories and all the love you deserve.
+I hope today brings endless happiness,
+beautiful memories,
+success,
+good health,
+and everything your heart wishes for.
 
 Never stop smiling.
 
@@ -139,409 +167,354 @@ Happy Birthday once again ❤️`;
 
 typingText.textContent="";
 
-let index=0;
+let i=0;
+let typingStarted=false;
 
-function typeWriter(){
+function type(){
 
-    if(index<message.length){
+    if(i>=message.length) return;
 
-        typingText.textContent+=message.charAt(index);
+    typingText.textContent += message.charAt(i);
 
-        index++;
+    i++;
 
-        setTimeout(typeWriter,28);
-
-    }
+    setTimeout(type,26);
 
 }
 
-const observer=new IntersectionObserver((entries)=>{
+const observer=new IntersectionObserver(entries=>{
 
-    entries.forEach(entry=>{
+entries.forEach(entry=>{
 
-        if(entry.isIntersecting){
+if(entry.isIntersecting && !typingStarted){
 
-            typeWriter();
+typingStarted=true;
 
-            observer.disconnect();
+type();
 
-        }
+}
 
-    });
+});
 
 },{
-    threshold:0.4
+threshold:.45
 });
 
 observer.observe(typingText);
 
 }
 
-/*==========================
-        SMOOTH SCROLL
-==========================*/
-
-document.querySelectorAll('a[href^="#"]').forEach(link=>{
-
-    link.addEventListener("click",(e)=>{
-
-        e.preventDefault();
-
-        const target=document.querySelector(
-
-            link.getAttribute("href")
-
-        );
-
-        if(target){
-
-            target.scrollIntoView({
-
-                behavior:"smooth"
-
-            });
-
-        }
-
-    });
-
-});
-
 /*=========================================================
-        PART 2
-        Scroll Reveal • Hero Parallax • Animations
+    SCROLL REVEAL
 =========================================================*/
 
-/*==========================
-        SCROLL REVEAL
-==========================*/
-
-const revealObserver = new IntersectionObserver((entries)=>{
-
-    entries.forEach(entry=>{
-
-        if(entry.isIntersecting){
-
-            entry.target.classList.add("show");
-
-        }
-
-    });
-
-},{
-    threshold:0.15
-});
-
-revealElements.forEach(el=>{
-
-    revealObserver.observe(el);
-
-});
-
-
-/*==========================
-        HERO PARALLAX
-==========================*/
-
-const heroImage=document.querySelector(".hero img");
-
-if(heroImage){
-
-    window.addEventListener("scroll",()=>{
-
-        const offset=window.scrollY;
-
-        heroImage.style.transform=
-        `translateY(${offset*0.18}px) scale(1.08)`;
-
-    });
-
-}
-
-
-/*==========================
-        HERO CONTENT PARALLAX
-==========================*/
-
-const heroContent=document.querySelector(".hero-content");
-
-if(heroContent){
-
-    window.addEventListener("scroll",()=>{
-
-        const y=window.scrollY;
-
-        heroContent.style.transform=
-        `translateY(${y*0.22}px)`;
-
-        heroContent.style.opacity=
-        Math.max(1-y/700,0);
-
-    });
-
-}
-
-
-/*==========================
-        SECTION FADE
-==========================*/
-
-const sections=document.querySelectorAll("section");
-
-const sectionObserver=new IntersectionObserver((entries)=>{
-
-    entries.forEach(entry=>{
-
-        if(entry.isIntersecting){
-
-            entry.target.style.opacity="1";
-
-            entry.target.style.transform="translateY(0)";
-
-        }
-
-    });
-
-},{
-    threshold:0.12
-});
-
-sections.forEach(section=>{
-
-
-    sectionObserver.observe(section);
-
-});
-
-
-/*==========================
-        TITLE GLOW
-==========================*/
-
-const titles=document.querySelectorAll(".section-title");
-
-titles.forEach(title=>{
-
-    setInterval(()=>{
-
-        title.style.textShadow=
-
-        `0 0 ${18+Math.random()*22}px rgba(95,169,255,.55)`;
-
-    },1500);
-
-});
-
-
-/*==========================
-        IMAGE FADE-IN
-==========================*/
-
-const images=document.querySelectorAll("img");
-
-const imageObserver=new IntersectionObserver((entries)=>{
-
-    entries.forEach(entry=>{
-
-        if(entry.isIntersecting){
-
-            entry.target.style.opacity="1";
-
-            entry.target.style.transform="scale(1)";
-
-        }
-
-    });
-
-},{
-    threshold:0.2
-});
-
-images.forEach(img=>{
-
-    img.style.opacity="0";
-
-    img.style.transform="scale(.94)";
-
-    img.style.transition=
-    "all 1s ease";
-
-    imageObserver.observe(img);
-
-});
-
-
-/*==========================
-        SCROLL PROGRESS
-==========================*/
-
-window.addEventListener("scroll",()=>{
-
-    const totalHeight=
-
-    document.documentElement.scrollHeight-
-    window.innerHeight;
-
-    const progress=
-
-    window.scrollY/totalHeight;
-
-    document.body.style.setProperty(
-
-        "--scroll-progress",
-
-        progress
-
-    );
-
-});
-
-
-/*==========================
-        BUTTON HOVER EFFECT
-==========================*/
-
-document.querySelectorAll("button").forEach(button=>{
-
-    button.addEventListener("mouseenter",()=>{
-
-        button.style.transform=
-        "translateY(-4px) scale(1.03)";
-
-    });
-
-    button.addEventListener("mouseleave",()=>{
-
-        button.style.transform=
-        "translateY(0) scale(1)";
-
-    });
-
-});
-
-
-/*==========================
-        SCROLL TO TOP
-==========================*/
-
-const scrollBtn=document.querySelector(".scroll-btn");
-
-if(scrollBtn){
-
-    scrollBtn.addEventListener("click",()=>{
-
-        window.scrollTo({
-
-            top:0,
-
-            behavior:"smooth"
-
-        });
-
-    });
-
-}
-
-
-/*=======================
-
-/*=========================================================
-        PART 4
-        Premium Gallery • 3D Hover • Floating Effects
-=========================================================*/
-
-/*==========================
-        GALLERY TILT
-==========================*/
-
-const galleryItems = document.querySelectorAll(".gallery-item");
-
-galleryItems.forEach(card=>{
-
-    card.addEventListener("mousemove",(e)=>{
-
-        const rect = card.getBoundingClientRect();
-
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-
-        const rotateY = ((x-rect.width/2)/rect.width)*18;
-        const rotateX = -((y-rect.height/2)/rect.height)*18;
-
-        card.style.transform = `
-            perspective(1200px)
-            rotateX(${rotateX}deg)
-            rotateY(${rotateY}deg)
-            translateY(-10px)
-            scale(1.04)
-        `;
-
-    });
-
-    card.addEventListener("mouseleave",()=>{
-
-        card.style.transform = `
-            perspective(1200px)
-            rotateX(0deg)
-            rotateY(0deg)
-            translateY(0)
-            scale(1)
-        `;
-
-    });
-
-});
-
-
-/*==========================
-        IMAGE PARALLAX
-==========================*/
-
-galleryItems.forEach(card=>{
-
-    const img = card.querySelector("img");
-
-    if(!img) return;
-
-    card.addEventListener("mousemove",(e)=>{
-
-        const rect = card.getBoundingClientRect();
-
-        const x = (e.clientX-rect.left)/rect.width-.5;
-        const y = (e.clientY-rect.top)/rect.height-.5;
-
-        img.style.transform=`
-
-            scale(1.12)
-
-            translate(${x*18}px,${y*18}px)
-
-        `;
-
-    });
-
-    card.addEventListener("mouseleave",()=>{
-
-        img.style.transform="scale(1)";
-
-    });
-
-});
-
-
-/*==========================
-        GALLERY FADE
-==========================*/
-
-const galleryObserver=new IntersectionObserver((entries)=>{
+const revealObserver=new IntersectionObserver(entries=>{
 
 entries.forEach(entry=>{
 
 if(entry.isIntersecting){
 
-entry.target.style.opacity="1";
+entry.target.classList.add("show");
 
-entry.target.style.transform="translateY(0)";
+}
+
+});
+
+},{
+threshold:.18
+});
+
+revealItems.forEach(item=>{
+
+revealObserver.observe(item);
+
+});
+
+/*=========================================================
+    HERO PARALLAX
+=========================================================*/
+
+if(heroImage){
+
+window.addEventListener("scroll",()=>{
+
+const y=window.scrollY;
+
+heroImage.style.transform=
+
+`translateY(${y*0.18}px) scale(${1.05+y*0.00008})`;
+
+});
+
+}
+
+if(heroContent){
+
+window.addEventListener("scroll",()=>{
+
+const y=window.scrollY;
+
+heroContent.style.transform=
+
+`translateY(${y*0.20}px)`;
+
+heroContent.style.opacity=
+
+Math.max(1-y/650,0);
+
+});
+
+}
+
+/*=========================================================
+    SMOOTH SCROLL
+=========================================================*/
+
+document.querySelectorAll('a[href^="#"]').forEach(link=>{
+
+link.addEventListener("click",(e)=>{
+
+e.preventDefault();
+
+const target=document.querySelector(
+
+link.getAttribute("href")
+
+);
+
+if(target){
+
+target.scrollIntoView({
+
+behavior:"smooth"
+
+});
+
+}
+
+});
+
+});
+
+/*=========================================================
+    IMAGE LOAD
+=========================================================*/
+
+document.querySelectorAll("img").forEach(img=>{
+
+img.style.opacity="0";
+
+img.addEventListener("load",()=>{
+
+img.style.transition="opacity .9s ease";
+
+img.style.opacity="1";
+
+});
+
+if(img.complete){
+
+img.dispatchEvent(new Event("load"));
+
+}
+
+});
+
+/*=========================================================
+    DESKTOP ONLY PARALLAX
+=========================================================*/
+
+if(window.innerWidth>900){
+
+window.addEventListener("mousemove",(e)=>{
+
+const x=(e.clientX/window.innerWidth-.5)*20;
+const y=(e.clientY/window.innerHeight-.5)*20;
+
+if(heroContent){
+
+heroContent.style.transform=
+
+`translate(${x}px,${y}px)`;
+
+}
+
+});
+
+}
+
+/*=========================================================
+    RESIZE
+=========================================================*/
+
+window.addEventListener("resize",()=>{
+
+if(window.innerWidth<900){
+
+if(cursorGlow){
+
+cursorGlow.style.display="none";
+
+}
+
+}
+
+});
+
+/*=========================================================
+    PART 1 END
+=========================================================*/
+/*=========================================================
+    PART 2
+    Premium Gallery • Scroll Animations • Stars • Hearts
+=========================================================*/
+
+"use strict";
+
+/*=========================================================
+    GALLERY
+=========================================================*/
+
+const galleryItems = document.querySelectorAll(".gallery-item");
+
+/*=========================================================
+    IMAGE SHINE
+=========================================================*/
+
+galleryItems.forEach(card=>{
+
+    const shine=document.createElement("div");
+    shine.className="image-shine";
+
+    card.appendChild(shine);
+
+    card.addEventListener("mouseenter",()=>{
+
+        shine.style.left="130%";
+
+        setTimeout(()=>{
+
+            shine.style.transition="none";
+            shine.style.left="-120%";
+
+            requestAnimationFrame(()=>{
+
+                shine.style.transition=".8s";
+
+            });
+
+        },800);
+
+    });
+
+});
+
+/*=========================================================
+    DESKTOP 3D HOVER
+=========================================================*/
+
+if(window.innerWidth>900){
+
+galleryItems.forEach(card=>{
+
+card.addEventListener("mousemove",(e)=>{
+
+const rect=card.getBoundingClientRect();
+
+const x=e.clientX-rect.left;
+const y=e.clientY-rect.top;
+
+const rotateY=((x-rect.width/2)/rect.width)*12;
+const rotateX=-((y-rect.height/2)/rect.height)*12;
+
+card.style.transform=
+
+`perspective(1200px)
+ rotateX(${rotateX}deg)
+ rotateY(${rotateY}deg)
+ translateY(-8px)
+ scale(1.02)`;
+
+const img=card.querySelector("img");
+
+if(img){
+
+img.style.transform=
+
+`scale(1.08)
+ translate(${rotateY*1.4}px,${rotateX*1.4}px)`;
+
+}
+
+});
+
+card.addEventListener("mouseleave",()=>{
+
+card.style.transform="none";
+
+const img=card.querySelector("img");
+
+if(img){
+
+img.style.transform="scale(1)";
+
+}
+
+});
+
+});
+
+}
+
+/*=========================================================
+    MOBILE
+=========================================================*/
+
+else{
+
+galleryItems.forEach(card=>{
+
+card.style.transform="none";
+
+});
+
+}
+
+/*=========================================================
+    GALLERY REVEAL
+=========================================================*/
+
+const galleryObserver=new IntersectionObserver(entries=>{
+
+entries.forEach(entry=>{
+
+if(entry.isIntersecting){
+
+entry.target.animate([
+
+{
+
+opacity:0,
+transform:"translateY(80px)"
+
+},
+
+{
+
+opacity:1,
+transform:"translateY(0)"
+
+}
+
+],{
+
+duration:900,
+fill:"forwards",
+easing:"ease"
+
+});
+
+galleryObserver.unobserve(entry.target);
 
 }
 
@@ -553,643 +526,133 @@ threshold:.2
 
 galleryItems.forEach(card=>{
 
-card.style.opacity="0";
-
-card.style.transform="translateY(80px)";
-
-card.style.transition=
-
-"all 1s cubic-bezier(.22,.61,.36,1)";
-
 galleryObserver.observe(card);
 
 });
 
+/*=========================================================
+    FLOATING STARS
+=========================================================*/
 
-/*==========================
-        FLOATING EFFECT
-==========================*/
+const stars=document.getElementById("stars");
 
-galleryItems.forEach((card,index)=>{
+if(stars){
 
-setInterval(()=>{
+for(let i=0;i<120;i++){
 
-card.style.transform+=`
+const star=document.createElement("div");
 
- translateY(${Math.sin(Date.now()/700+index)*3}px)
+star.className="star";
 
-`;
+const size=Math.random()*3+1;
 
-},40);
+star.style.width=size+"px";
+star.style.height=size+"px";
 
-});
+star.style.left=Math.random()*100+"vw";
+star.style.top=Math.random()*100+"vh";
 
+star.style.animationDuration=
 
-/*==========================
-        IMAGE SHINE
-==========================*/
+(2+Math.random()*5)+"s";
 
-galleryItems.forEach(card=>{
+star.style.animationDelay=
 
-const shine=document.createElement("div");
+Math.random()*4+"s";
 
-shine.className="image-shine";
+stars.appendChild(star);
 
-card.appendChild(shine);
+}
 
-card.addEventListener("mouseenter",()=>{
+}
 
-shine.style.left="130%";
+/*=========================================================
+    SHOOTING STAR
+=========================================================*/
+
+function createShootingStar(){
+
+const star=document.createElement("div");
+
+star.className="shooting-star";
+
+star.style.left=Math.random()*window.innerWidth+"px";
+star.style.top=Math.random()*250+"px";
+
+document.body.appendChild(star);
 
 setTimeout(()=>{
 
-shine.style.transition="none";
+star.remove();
 
-shine.style.left="-120%";
+},1700);
 
-requestAnimationFrame(()=>{
+}
 
-shine.style.transition=".8s";
+setInterval(createShootingStar,6500);
+
+/*=========================================================
+    FLOATING HEARTS
+=========================================================*/
+
+const hearts=document.getElementById("hearts");
+
+function createHeart(x,y){
+
+const heart=document.createElement("div");
+
+heart.className="heart";
+
+heart.innerHTML="❤️";
+
+heart.style.left=x+"px";
+heart.style.top=y+"px";
+
+heart.style.fontSize=
+
+(18+Math.random()*16)+"px";
+
+heart.style.position="fixed";
+
+document.body.appendChild(heart);
+
+setTimeout(()=>{
+
+heart.remove();
+
+},5000);
+
+}
+
+document.addEventListener("click",(e)=>{
+
+createHeart(e.clientX,e.clientY);
 
 });
 
-},850);
+/*=========================================================
+    PARALLAX LIGHTS
+=========================================================*/
 
-});
-
-});
-
-
-/*==========================
-        CARD GLOW
-==========================*/
-
-galleryItems.forEach(card=>{
-
-card.addEventListener("mouseenter",()=>{
-
-card.style.boxShadow=
-
-"0 35px 80px rgba(95,169,255,.35)";
-
-});
-
-card.addEventListener("mouseleave",()=>{
-
-card.style.boxShadow=
-
-"0 15px 40px rgba(0,0,0,.3)";
-
-});
-
-});
-
-
-/*==========================
-        QUOTE FLOAT
-==========================*/
-
-const quote=document.querySelector(".quote");
-
-if(quote){
+const lights=document.querySelectorAll(".light");
 
 window.addEventListener("scroll",()=>{
 
 const y=window.scrollY;
 
-quote.style.transform=
+lights.forEach((light,index)=>{
 
-`translateY(${Math.sin(y/180)*20}px)`;
+light.style.transform=
 
-});
-
-}
-
-
-/*==========================
-        TIMELINE CARDS
-==========================*/
-
-document.querySelectorAll(".timeline-item").forEach(item=>{
-
-item.addEventListener("mouseenter",()=>{
-
-item.style.transform=
-
-"translateY(-10px) scale(1.03)";
-
-});
-
-item.addEventListener("mouseleave",()=>{
-
-item.style.transform=
-
-"translateY(0) scale(1)";
+`translateY(${y*(0.08+index*0.02)}px)`;
 
 });
 
 });
-
-
-/*==========================
-        HERO IMAGE ZOOM
-==========================*/
-
-if(heroImage){
-
-window.addEventListener("scroll",()=>{
-
-const scale=1.08+window.scrollY*0.00018;
-
-heroImage.style.transform=
-
-`translateY(${window.scrollY*.18}px)
-
- scale(${scale})`;
-
-});
-
-}
-
-
-/*==========================
-        END PART 4
-==========================*/
 
 /*=========================================================
-        PART 5
-        Celebration • Secret Surprise • Fireworks
+    BUTTON RIPPLE
 =========================================================*/
-
-/*==========================
-        CONFETTI
-==========================*/
-
-const canvas=document.getElementById("confetti");
-const celebrateBtn=document.getElementById("celebrateBtn");
-
-let ctx=null;
-let confetti=[];
-
-if(canvas){
-
-ctx=canvas.getContext("2d");
-
-function resizeCanvas(){
-
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
-
-}
-
-resizeCanvas();
-
-window.addEventListener("resize",resizeCanvas);
-
-function random(min,max){
-
-return Math.random()*(max-min)+min;
-
-}
-
-function createConfetti(){
-
-confetti=[];
-
-for(let i=0;i<320;i++){
-
-confetti.push({
-
-x:random(0,canvas.width),
-
-y:random(-canvas.height,0),
-
-size:random(4,10),
-
-speed:random(2,8),
-
-rotation:random(0,360),
-
-rotationSpeed:random(-6,6),
-
-color:[
-"#5fa9ff",
-"#9b7bff",
-"#ffd166",
-"#ffffff",
-"#ff7eb6",
-"#8ce99a"
-][Math.floor(Math.random()*6)]
-
-});
-
-}
-
-}
-
-function drawConfetti(){
-
-ctx.clearRect(0,0,canvas.width,canvas.height);
-
-confetti.forEach(piece=>{
-
-ctx.save();
-
-ctx.translate(piece.x,piece.y);
-
-ctx.rotate(piece.rotation*Math.PI/180);
-
-ctx.fillStyle=piece.color;
-
-ctx.fillRect(
-
--piece.size/2,
-
--piece.size/2,
-
-piece.size,
-
-piece.size*1.6
-
-);
-
-ctx.restore();
-
-piece.y+=piece.speed;
-
-piece.rotation+=piece.rotationSpeed;
-
-if(piece.y>canvas.height+20){
-
-piece.y=-20;
-
-piece.x=random(0,canvas.width);
-
-}
-
-});
-
-requestAnimationFrame(drawConfetti);
-
-}
-
-}
-
-/*==========================
-        FIREWORKS
-==========================*/
-
-function fireworkBurst(){
-
-for(let i=0;i<60;i++){
-
-const particle=document.createElement("div");
-
-particle.className="firework";
-
-particle.style.left=
-
-(window.innerWidth/2)+"px";
-
-particle.style.top=
-
-(window.innerHeight/2)+"px";
-
-const angle=Math.random()*360;
-
-const distance=80+Math.random()*180;
-
-particle.style.setProperty(
-
-"--x",
-
-Math.cos(angle*Math.PI/180)*distance+"px"
-
-);
-
-particle.style.setProperty(
-
-"--y",
-
-Math.sin(angle*Math.PI/180)*distance+"px"
-
-);
-
-document.body.appendChild(particle);
-
-setTimeout(()=>{
-
-particle.remove();
-
-},1200);
-
-}
-
-}
-
-/*==========================
-        CELEBRATE BUTTON
-==========================*/
-
-/*==========================
-        CELEBRATE BUTTON
-==========================*/
-
-if (celebrateBtn) {
-
-    celebrateBtn.addEventListener("click", () => {
-
-        // Confetti
-        if (canvas) {
-            createConfetti();
-            drawConfetti();
-        }
-
-        // Fireworks
-        fireworkBurst();
-
-        // Button animation
-        celebrateBtn.innerHTML = "🎉 Happy Birthday! 🎉";
-        celebrateBtn.style.transform = "scale(1.12)";
-        celebrateBtn.style.boxShadow = "0 0 60px rgba(95,169,255,.9)";
-
-        // Play music
-        if (music && music.paused) {
-            music.play().catch(() => {});
-        }
-
-        // Extra effects
-        createBalloons();
-        createHearts();
-        screenFlash();
-
-    });
-
-}
-
-
-/*==========================
-        BALLOONS
-==========================*/
-
-function createBalloons(){
-
-    for(let i=0;i<25;i++){
-
-        const balloon=document.createElement("div");
-
-        balloon.className="balloon";
-
-        balloon.innerHTML="🎈";
-
-        balloon.style.left=Math.random()*100+"vw";
-
-        balloon.style.animationDuration=(5+Math.random()*4)+"s";
-
-        balloon.style.fontSize=(25+Math.random()*30)+"px";
-
-        document.body.appendChild(balloon);
-
-        setTimeout(()=>{
-            balloon.remove();
-        },9000);
-
-    }
-
-}
-
-
-/*==========================
-        HEARTS
-==========================*/
-
-function createHearts(){
-
-    for(let i=0;i<40;i++){
-
-        const heart=document.createElement("div");
-
-        heart.className="celebrate-heart";
-
-        heart.innerHTML="❤️";
-
-        heart.style.left=Math.random()*100+"vw";
-
-        heart.style.top=Math.random()*100+"vh";
-
-        heart.style.animationDelay=Math.random()+"s";
-
-        document.body.appendChild(heart);
-
-        setTimeout(()=>{
-            heart.remove();
-        },3000);
-
-    }
-
-}
-
-
-/*==========================
-        FLASH
-==========================*/
-
-function screenFlash(){
-
-    const flash=document.createElement("div");
-
-    flash.className="flash";
-
-    document.body.appendChild(flash);
-
-    setTimeout(()=>{
-        flash.remove();
-    },600);
-
-}
-/*==========================
-        SECRET SURPRISE
-==========================*/
-
-const trigger=document.querySelector(".heart-trigger");
-const secret=document.getElementById("secret");
-
-let clicks=0;
-
-if(trigger && secret){
-
-trigger.addEventListener("click",()=>{
-
-clicks++;
-
-if(clicks>=5){
-
-secret.classList.add("active");
-
-secret.scrollIntoView({
-
-behavior:"smooth"
-
-});
-
-}
-
-});
-
-}
-
-/*==========================
-        BIRTHDAY MESSAGE
-==========================*/
-
-setTimeout(()=>{
-
-console.log(
-
-"%c🎂 Happy Birthday Vedshree ❤️",
-
-"font-size:28px;color:#5fa9ff;font-weight:bold;"
-
-);
-
-},2000);
-
-/*==========================
-        MUSIC ENDED
-==========================*/
-
-if(music && musicBtn){
-
-music.addEventListener("ended",()=>{
-
-musicBtn.innerHTML='<i class="fas fa-play"></i>';
-
-});
-
-}
-
-/*==========================
-        END PART 5
-==========================*/
-
-/*=========================================================
-        PART 6
-        Performance • Final Polish • Optimizations
-=========================================================*/
-
-"use strict";
-
-/*==========================
-        PAGE FADE-IN
-==========================*/
-
-window.addEventListener("load",()=>{
-
-document.body.style.opacity="0";
-
-requestAnimationFrame(()=>{
-
-document.body.style.transition="opacity 1.2s ease";
-
-document.body.style.opacity="1";
-
-});
-
-});
-
-
-/*==========================
-        PREVENT IMAGE DRAG
-==========================*/
-
-document.querySelectorAll("img").forEach(img=>{
-
-img.setAttribute("draggable","false");
-
-});
-
-
-/*==========================
-        LAZY VIDEO
-==========================*/
-
-document.querySelectorAll("video").forEach(video=>{
-
-video.setAttribute("preload","metadata");
-
-});
-
-
-/*==========================
-        PERFORMANCE RESIZE
-==========================*/
-
-let resizeTimer;
-
-window.addEventListener("resize",()=>{
-
-clearTimeout(resizeTimer);
-
-resizeTimer=setTimeout(()=>{
-
-if(typeof resizeCanvas==="function"){
-
-resizeCanvas();
-
-}
-
-},150);
-
-});
-
-
-/*==========================
-        PARALLAX OPTIMIZATION
-==========================*/
-
-let ticking=false;
-
-window.addEventListener("scroll",()=>{
-
-if(!ticking){
-
-window.requestAnimationFrame(()=>{
-
-ticking=false;
-
-});
-
-ticking=true;
-
-}
-
-});
-
-
-/*==========================
-        MUSIC ICON UPDATE
-==========================*/
-
-if(music && musicBtn){
-
-music.addEventListener("play",()=>{
-
-musicBtn.innerHTML='<i class="fas fa-pause"></i>';
-
-});
-
-music.addEventListener("pause",()=>{
-
-musicBtn.innerHTML='<i class="fas fa-play"></i>';
-
-});
-
-}
-
-
-/*==========================
-        BUTTON RIPPLE
-==========================*/
 
 document.querySelectorAll("button").forEach(button=>{
 
@@ -1197,10 +660,11 @@ button.addEventListener("click",(e)=>{
 
 const ripple=document.createElement("span");
 
+ripple.className="ripple";
+
 const size=Math.max(
 
 button.offsetWidth,
-
 button.offsetHeight
 
 );
@@ -1216,8 +680,6 @@ ripple.style.top=
 
 (e.offsetY-size/2)+"px";
 
-ripple.className="ripple";
-
 button.appendChild(ripple);
 
 setTimeout(()=>{
@@ -1230,100 +692,874 @@ ripple.remove();
 
 });
 
+/*=========================================================
+    SCROLL PROGRESS
+=========================================================*/
 
-/*==========================
-        CARD FLOAT
-==========================*/
+window.addEventListener("scroll",()=>{
 
-document.querySelectorAll(
+const total=
 
-".gallery-item,.timeline-item,.wish-card"
+document.documentElement.scrollHeight-
 
-).forEach((card,index)=>{
+window.innerHeight;
 
-setInterval(()=>{
+const progress=
 
-card.style.transform=
+window.scrollY/total;
 
-`translateY(${Math.sin(Date.now()/900+index)*2}px)`;
+document.documentElement.style.setProperty(
 
-},40);
+"--scroll",
 
-});
+progress
 
-
-/*==========================
-        IMAGE LOADED
-==========================*/
-
-document.querySelectorAll("img").forEach(img=>{
-
-if(img.complete){
-
-img.classList.add("loaded");
-
-}else{
-
-img.addEventListener("load",()=>{
-
-img.classList.add("loaded");
+);
 
 });
+
+/*=========================================================
+    END PART 2
+=========================================================*/
+/*=========================================================
+    PART 3A
+    CONFETTI + FIREWORKS
+=========================================================*/
+
+const canvas = document.getElementById("confetti");
+const ctx = canvas ? canvas.getContext("2d") : null;
+
+let confettiPieces = [];
+let fireworks = [];
+let particles = [];
+
+function resizeCanvas() {
+    if (!canvas) return;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+
+/*=========================
+    CONFETTI
+=========================*/
+
+class Confetti {
+
+    constructor() {
+
+        this.x = Math.random() * canvas.width;
+        this.y = -20;
+
+        this.size = Math.random() * 8 + 4;
+
+        this.speed = Math.random() * 3 + 2;
+
+        this.swing = Math.random() * 2;
+
+        this.angle = Math.random() * Math.PI * 2;
+
+        this.color = [
+            "#ff4d6d",
+            "#ffd60a",
+            "#00d4ff",
+            "#7b2ff7",
+            "#ffffff"
+        ][Math.floor(Math.random() * 5)];
+
+    }
+
+    update() {
+
+        this.y += this.speed;
+
+        this.angle += 0.05;
+
+        this.x += Math.sin(this.angle) * this.swing;
+
+        if (this.y > canvas.height + 20) {
+
+            this.y = -20;
+
+            this.x = Math.random() * canvas.width;
+
+        }
+
+    }
+
+    draw() {
+
+        ctx.save();
+
+        ctx.translate(this.x, this.y);
+
+        ctx.rotate(this.angle);
+
+        ctx.fillStyle = this.color;
+
+        ctx.fillRect(
+            -this.size / 2,
+            -this.size / 2,
+            this.size,
+            this.size
+        );
+
+        ctx.restore();
+
+    }
 
 }
 
-});
+function launchConfetti(amount = 200) {
 
+    for (let i = 0; i < amount; i++) {
 
-/*==========================
-        MOBILE TOUCH
-==========================*/
+        confettiPieces.push(new Confetti());
 
-if(window.innerWidth<768){
-
-document.querySelectorAll(".gallery-item").forEach(card=>{
-
-card.style.transform="none";
-
-});
+    }
 
 }
 
+/*=========================
+    FIREWORKS
+=========================*/
 
-/*==========================
-        SMOOTH SCROLL
-==========================*/
+class Firework {
 
-// history.scrollRestoration="manual";
+    constructor(x, y) {
 
-// window.scrollTo(0,0);
+        this.x = x;
 
+        this.y = canvas.height;
 
-/*==========================
-        DISABLE RIGHT CLICK
-        (optional)
-==========================*/
+        this.targetY = y;
 
-// document.addEventListener(
-// "contextmenu",
-// e=>e.preventDefault()
-// );
+        this.speed = 8;
 
+        this.done = false;
 
-/*==========================
-        FINAL CONSOLE MESSAGE
-==========================*/
+    }
 
-console.log(
-"%cMade with ❤️ for Vedshree",
-"font-size:18px;color:#5fa9ff;font-weight:bold;"
-);
+    update() {
 
-console.log(
-"%cHappy Birthday 🎂✨",
-"font-size:26px;color:#ffffff;font-weight:bold;"
-);
+        this.y -= this.speed;
 
-/*==========================
-        END
-==========================*/
+        if (this.y <= this.targetY && !this.done) {
+
+            this.done = true;
+
+            explode(this.x, this.y);
+
+        }
+
+    }
+
+    draw() {
+
+        ctx.beginPath();
+
+        ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+
+        ctx.fillStyle = "white";
+
+        ctx.fill();
+
+    }
+
+}
+
+class Particle {
+
+    constructor(x, y) {
+
+        this.x = x;
+
+        this.y = y;
+
+        this.life = 100;
+
+        this.speed = Math.random() * 5 + 2;
+
+        this.angle = Math.random() * Math.PI * 2;
+
+        this.color = `hsl(${Math.random() * 360},100%,60%)`;
+
+    }
+
+    update() {
+
+        this.life--;
+
+        this.x += Math.cos(this.angle) * this.speed;
+
+        this.y += Math.sin(this.angle) * this.speed;
+
+        this.speed *= 0.98;
+
+    }
+
+    draw() {
+
+        ctx.globalAlpha = this.life / 100;
+
+        ctx.beginPath();
+
+        ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+
+        ctx.fillStyle = this.color;
+
+        ctx.fill();
+
+        ctx.globalAlpha = 1;
+
+    }
+
+}
+
+function explode(x, y) {
+
+    for (let i = 0; i < 70; i++) {
+
+        particles.push(new Particle(x, y));
+
+    }
+
+}
+
+function launchFirework() {
+
+    fireworks.push(
+
+        new Firework(
+
+            Math.random() * canvas.width,
+
+            Math.random() * canvas.height * 0.5 + 50
+
+        )
+
+    );
+
+}
+
+/*=========================
+    ANIMATION LOOP
+=========================*/
+
+function animateCelebration() {
+
+    if (!ctx) return;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    confettiPieces.forEach(c => {
+
+        c.update();
+
+        c.draw();
+
+    });
+
+    fireworks.forEach((f, i) => {
+
+        f.update();
+
+        f.draw();
+
+        if (f.done)
+
+            fireworks.splice(i, 1);
+
+    });
+
+    particles.forEach((p, i) => {
+
+        p.update();
+
+        p.draw();
+
+        if (p.life <= 0)
+
+            particles.splice(i, 1);
+
+    });
+
+    requestAnimationFrame(animateCelebration);
+
+}
+
+if (ctx)
+
+    animateCelebration();
+
+/*=========================
+    AUTO FIREWORKS
+=========================*/
+
+setInterval(() => {
+
+    launchFirework();
+
+}, 2200);
+/*=========================================================
+    PART 3B
+    BALLOONS • HEARTS • CELEBRATION • FLASH
+=========================================================*/
+
+const celebrateBtn = document.getElementById("celebrateBtn");
+
+/*=========================================================
+    BALLOONS
+=========================================================*/
+
+function createBalloon() {
+
+    const balloon = document.createElement("div");
+
+    balloon.className = "balloon";
+
+    balloon.style.left = Math.random() * 100 + "vw";
+
+    balloon.style.background =
+        `hsl(${Math.random() * 360},90%,65%)`;
+
+    balloon.style.animationDuration =
+        (8 + Math.random() * 6) + "s";
+
+    balloon.style.transform =
+        `scale(${0.8 + Math.random() * 0.5})`;
+
+    document.body.appendChild(balloon);
+
+    setTimeout(() => {
+        balloon.remove();
+    }, 15000);
+
+}
+
+function launchBalloons(count = 25) {
+
+    let i = 0;
+
+    const interval = setInterval(() => {
+
+        createBalloon();
+
+        i++;
+
+        if (i >= count)
+            clearInterval(interval);
+
+    }, 250);
+
+}
+
+/*=========================================================
+    HEART BURST
+=========================================================*/
+
+function heartBurst() {
+
+    const total = 40;
+
+    for (let i = 0; i < total; i++) {
+
+        const heart = document.createElement("div");
+
+        heart.innerHTML = "❤️";
+
+        heart.className = "celebration-heart";
+
+        heart.style.position = "fixed";
+
+        heart.style.left = "50%";
+        heart.style.top = "50%";
+
+        const angle = (Math.PI * 2 / total) * i;
+
+        const distance = 180 + Math.random() * 140;
+
+        heart.animate([
+            {
+                transform: "translate(-50%,-50%) scale(.2)",
+                opacity: 1
+            },
+            {
+                transform:
+                    `translate(
+                        calc(-50% + ${Math.cos(angle) * distance}px),
+                        calc(-50% + ${Math.sin(angle) * distance}px)
+                    ) scale(1.4)`,
+                opacity: 0
+            }
+        ], {
+            duration: 1800,
+            easing: "ease-out"
+        });
+
+        document.body.appendChild(heart);
+
+        setTimeout(() => heart.remove(), 1900);
+
+    }
+
+}
+
+/*=========================================================
+    SCREEN FLASH
+=========================================================*/
+
+function screenFlash() {
+
+    const flash = document.createElement("div");
+
+    flash.style.position = "fixed";
+    flash.style.inset = "0";
+    flash.style.background = "white";
+    flash.style.opacity = "0";
+    flash.style.pointerEvents = "none";
+    flash.style.zIndex = "99999";
+
+    document.body.appendChild(flash);
+
+    flash.animate([
+        { opacity: 0 },
+        { opacity: .8 },
+        { opacity: 0 }
+    ], {
+        duration: 500
+    });
+
+    setTimeout(() => flash.remove(), 550);
+
+}
+
+/*=========================================================
+    SECRET MESSAGE
+=========================================================*/
+
+function secretMessage() {
+
+    const box = document.createElement("div");
+
+    box.className = "secret-message";
+
+    box.innerHTML = `
+        <h2>💖 Happy Birthday Vedshree 💖</h2>
+        <p>
+        You deserve every smile,
+        every success,
+        every dream,
+        and every beautiful moment life has to offer.
+        <br><br>
+        Never stop shining ✨
+        </p>
+    `;
+
+    document.body.appendChild(box);
+
+    setTimeout(() => {
+
+        box.classList.add("show");
+
+    }, 100);
+
+}
+
+/*=========================================================
+    CELEBRATE BUTTON
+=========================================================*/
+
+if (celebrateBtn) {
+
+    celebrateBtn.addEventListener("click", () => {
+
+        launchConfetti(250);
+
+        for (let i = 0; i < 6; i++) {
+
+            setTimeout(() => {
+
+                launchFirework();
+
+            }, i * 450);
+
+        }
+
+        launchBalloons(30);
+
+        heartBurst();
+
+        screenFlash();
+
+        setTimeout(secretMessage, 900);
+
+    });
+
+}
+
+/*=========================================================
+    AUTO MINI CONFETTI
+=========================================================*/
+
+setInterval(() => {
+
+    if (confettiPieces.length < 120)
+        launchConfetti(25);
+
+}, 7000);
+
+/*=========================================================
+    END PART 3
+=========================================================*/
+/*=========================================================
+    PART 4
+    PERFORMANCE • POLISH • FINAL TOUCHES
+=========================================================*/
+
+"use strict";
+
+/*=========================================================
+    FPS FRIENDLY SCROLL
+=========================================================*/
+
+let scrollTick = false;
+
+function updateScrollEffects() {
+
+    const y = window.scrollY;
+
+    // Progress Bar
+    const progress =
+        y / (document.documentElement.scrollHeight - window.innerHeight);
+
+    document.documentElement.style.setProperty(
+        "--scroll-progress",
+        progress
+    );
+
+    // Navbar Blur
+    const nav = document.querySelector("nav");
+
+    if (nav) {
+
+        if (y > 50)
+            nav.classList.add("scrolled");
+        else
+            nav.classList.remove("scrolled");
+
+    }
+
+    scrollTick = false;
+
+}
+
+window.addEventListener("scroll", () => {
+
+    if (!scrollTick) {
+
+        requestAnimationFrame(updateScrollEffects);
+
+        scrollTick = true;
+
+    }
+
+});
+
+/*=========================================================
+    BUTTON HOVER GLOW
+=========================================================*/
+
+document.querySelectorAll("button").forEach(button => {
+
+    button.addEventListener("mousemove", e => {
+
+        const rect = button.getBoundingClientRect();
+
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        button.style.setProperty("--x", x + "px");
+        button.style.setProperty("--y", y + "px");
+
+    });
+
+});
+
+/*=========================================================
+    RANDOM TWINKLE
+=========================================================*/
+
+function twinkle() {
+
+    document.querySelectorAll(".star").forEach(star => {
+
+        star.animate([
+
+            {
+                opacity: .2
+            },
+
+            {
+                opacity: 1
+            },
+
+            {
+                opacity: .2
+            }
+
+        ], {
+
+            duration: 1200 + Math.random() * 2500
+
+        });
+
+    });
+
+}
+
+setInterval(twinkle, 1800);
+
+/*=========================================================
+    HERO IMAGE FLOAT
+=========================================================*/
+
+if (heroImage) {
+
+    heroImage.animate([
+
+        {
+            transform: "translateY(0px)"
+        },
+
+        {
+            transform: "translateY(-12px)"
+        },
+
+        {
+            transform: "translateY(0px)"
+        }
+
+    ], {
+
+        duration: 4500,
+
+        iterations: Infinity
+
+    });
+
+}
+
+/*=========================================================
+    MOBILE OPTIMIZATION
+=========================================================*/
+
+if (window.innerWidth < 768) {
+
+    document.querySelectorAll(".gallery-item").forEach(card => {
+
+        card.style.transform = "none";
+
+    });
+
+    document.querySelectorAll(".star").forEach((star, index) => {
+
+        if (index % 2 === 0)
+            star.remove();
+
+    });
+
+}
+
+/*=========================================================
+    PAGE VISIBILITY
+=========================================================*/
+
+document.addEventListener("visibilitychange", () => {
+
+    if (!music) return;
+
+    if (document.hidden) {
+
+        music.pause();
+
+    } else {
+
+        music.play().catch(() => {});
+
+    }
+
+});
+
+/*=========================================================
+    DOUBLE CLICK SURPRISE
+=========================================================*/
+
+document.body.addEventListener("dblclick", () => {
+
+    launchConfetti(120);
+
+    launchFirework();
+
+});
+
+/*=========================================================
+    KEYBOARD SHORTCUTS
+=========================================================*/
+
+document.addEventListener("keydown", e => {
+
+    if (e.code === "Space") {
+
+        e.preventDefault();
+
+        if (music.paused)
+            music.play().catch(() => {});
+        else
+            music.pause();
+
+    }
+
+});
+
+/*=========================================================
+    RANDOM HEART
+=========================================================*/
+
+setInterval(() => {
+
+    if (Math.random() > .75) {
+
+        const heart = document.createElement("div");
+
+        heart.innerHTML = "❤️";
+
+        heart.style.position = "fixed";
+
+        heart.style.left =
+            Math.random() * window.innerWidth + "px";
+
+        heart.style.bottom = "-30px";
+
+        heart.style.pointerEvents = "none";
+
+        heart.style.fontSize =
+            (18 + Math.random() * 20) + "px";
+
+        heart.style.zIndex = "9999";
+
+        document.body.appendChild(heart);
+
+        heart.animate([
+
+            {
+
+                transform: "translateY(0)",
+
+                opacity: 1
+
+            },
+
+            {
+
+                transform: "translateY(-350px)",
+
+                opacity: 0
+
+            }
+
+        ], {
+
+            duration: 5000,
+
+            easing: "linear"
+
+        });
+
+        setTimeout(() => {
+
+            heart.remove();
+
+        }, 5000);
+
+    }
+
+}, 2500);
+
+/*=========================================================
+    PRELOAD IMAGES
+=========================================================*/
+
+window.addEventListener("load", () => {
+
+    document.querySelectorAll("img").forEach(img => {
+
+        const preload = new Image();
+
+        preload.src = img.src;
+
+    });
+
+});
+
+/*=========================================================
+    SMOOTH APPEAR
+=========================================================*/
+
+document.body.animate([
+
+    {
+
+        opacity: 0
+
+    },
+
+    {
+
+        opacity: 1
+
+    }
+
+], {
+
+    duration: 1200,
+
+    fill: "forwards"
+
+});
+
+/*=========================================================
+    MEMORY CLEANUP
+=========================================================*/
+
+window.addEventListener("beforeunload", () => {
+
+    confettiPieces.length = 0;
+
+    fireworks.length = 0;
+
+    particles.length = 0;
+
+});
+
+/*=========================================================
+    FINAL MESSAGE
+=========================================================*/
+
+console.log(`
+🎂 Happy Birthday Vedshree ❤️
+
+Made with love.
+
+Every animation,
+every line,
+every effect
+was created specially for you.
+
+✨
+`);
+
+/*=========================================================
+    END OF SCRIPT
+=========================================================*/
